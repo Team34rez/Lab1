@@ -7,6 +7,9 @@
         public decimal Price { get; set; }
         public string Category { get; set; }
 
+        public InventoryItem()
+        {
+        }
         public InventoryItem(string name, int quantity, decimal price, string category)
         {
             Name = name;
