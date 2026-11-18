@@ -48,94 +48,129 @@
             this.updateItemButton = new System.Windows.Forms.Button();
             this.removeItemButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
-
-            // Название товара
+            // 
+            // nameLabel
+            // 
             this.nameLabel.AutoSize = true;
             this.nameLabel.Location = new System.Drawing.Point(20, 20);
             this.nameLabel.Name = "nameLabel";
+            this.nameLabel.Size = new System.Drawing.Size(123, 16);
+            this.nameLabel.TabIndex = 0;
             this.nameLabel.Text = "Название товара";
-
+            // 
+            // quantityLabel
+            // 
+            this.quantityLabel.AutoSize = true;
+            this.quantityLabel.Location = new System.Drawing.Point(20, 84);
+            this.quantityLabel.Name = "quantityLabel";
+            this.quantityLabel.Size = new System.Drawing.Size(110, 16);
+            this.quantityLabel.TabIndex = 1;
+            this.quantityLabel.Text = "Количество, шт.";
+            // 
+            // priceLabel
+            // 
+            this.priceLabel.AutoSize = true;
+            this.priceLabel.Location = new System.Drawing.Point(20, 148);
+            this.priceLabel.Name = "priceLabel";
+            this.priceLabel.Size = new System.Drawing.Size(151, 16);
+            this.priceLabel.TabIndex = 2;
+            this.priceLabel.Text = "Цена за единицу, руб.";
+            // 
+            // categoryLabel
+            // 
+            this.categoryLabel.AutoSize = true;
+            this.categoryLabel.Location = new System.Drawing.Point(20, 212);
+            this.categoryLabel.Name = "categoryLabel";
+            this.categoryLabel.Size = new System.Drawing.Size(75, 16);
+            this.categoryLabel.TabIndex = 3;
+            this.categoryLabel.Text = "Категория";
+            // 
+            // itemsLabel
+            // 
+            this.itemsLabel.AutoSize = true;
+            this.itemsLabel.Location = new System.Drawing.Point(265, 20);
+            this.itemsLabel.Name = "itemsLabel";
+            this.itemsLabel.Size = new System.Drawing.Size(112, 16);
+            this.itemsLabel.TabIndex = 4;
+            this.itemsLabel.Text = "Список товаров";
+            // 
+            // nameTextBox
+            // 
             this.nameTextBox.Location = new System.Drawing.Point(20, 44);
             this.nameTextBox.Name = "nameTextBox";
             this.nameTextBox.Size = new System.Drawing.Size(220, 22);
             this.nameTextBox.TabIndex = 0;
-
-            // Количество
-            this.quantityLabel.AutoSize = true;
-            this.quantityLabel.Location = new System.Drawing.Point(20, 84);
-            this.quantityLabel.Name = "quantityLabel";
-            this.quantityLabel.Text = "Количество, шт.";
-
+            // 
+            // quantityTextBox
+            // 
             this.quantityTextBox.Location = new System.Drawing.Point(20, 108);
             this.quantityTextBox.Name = "quantityTextBox";
             this.quantityTextBox.Size = new System.Drawing.Size(220, 22);
             this.quantityTextBox.TabIndex = 1;
-
-            // Цена
-            this.priceLabel.AutoSize = true;
-            this.priceLabel.Location = new System.Drawing.Point(20, 148);
-            this.priceLabel.Name = "priceLabel";
-            this.priceLabel.Text = "Цена за единицу, руб.";
-
+            // 
+            // priceTextBox
+            // 
             this.priceTextBox.Location = new System.Drawing.Point(20, 172);
             this.priceTextBox.Name = "priceTextBox";
             this.priceTextBox.Size = new System.Drawing.Size(220, 22);
             this.priceTextBox.TabIndex = 2;
-
-            // Категория
-            this.categoryLabel.AutoSize = true;
-            this.categoryLabel.Location = new System.Drawing.Point(20, 212);
-            this.categoryLabel.Name = "categoryLabel";
-            this.categoryLabel.Text = "Категория";
-
+            // 
+            // categoryTextBox
+            // 
             this.categoryTextBox.Location = new System.Drawing.Point(20, 236);
             this.categoryTextBox.Name = "categoryTextBox";
             this.categoryTextBox.Size = new System.Drawing.Size(220, 22);
             this.categoryTextBox.TabIndex = 3;
-
-            // Список товаров
-            this.itemsLabel.AutoSize = true;
-            this.itemsLabel.Location = new System.Drawing.Point(265, 20);
-            this.itemsLabel.Name = "itemsLabel";
-            this.itemsLabel.Text = "Список товаров";
-
-            this.itemsListBox.Anchor = System.Windows.Forms.AnchorStyles.Top
-                | System.Windows.Forms.AnchorStyles.Bottom
-                | System.Windows.Forms.AnchorStyles.Left
-                | System.Windows.Forms.AnchorStyles.Right;
+            // 
+            // itemsListBox
+            // 
+            this.itemsListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.itemsListBox.HorizontalScrollbar = true;
             this.itemsListBox.IntegralHeight = false;
+            this.itemsListBox.ItemHeight = 16;
             this.itemsListBox.Location = new System.Drawing.Point(265, 44);
             this.itemsListBox.Name = "itemsListBox";
             this.itemsListBox.Size = new System.Drawing.Size(515, 376);
             this.itemsListBox.TabIndex = 5;
-
-            // Кнопки
+            this.itemsListBox.SelectedIndexChanged += new System.EventHandler(this.itemsListBox_SelectedIndexChanged);
+            // 
+            // addItemButton
+            // 
             this.addItemButton.Location = new System.Drawing.Point(20, 284);
             this.addItemButton.Name = "addItemButton";
             this.addItemButton.Size = new System.Drawing.Size(220, 36);
             this.addItemButton.TabIndex = 4;
             this.addItemButton.Text = "Добавить";
             this.addItemButton.UseVisualStyleBackColor = true;
-
+            this.addItemButton.Click += new System.EventHandler(this.addItemButton_Click);
+            // 
+            // updateItemButton
+            // 
             this.updateItemButton.Location = new System.Drawing.Point(20, 334);
             this.updateItemButton.Name = "updateItemButton";
             this.updateItemButton.Size = new System.Drawing.Size(220, 36);
             this.updateItemButton.TabIndex = 6;
             this.updateItemButton.Text = "Сохранить изменения";
             this.updateItemButton.UseVisualStyleBackColor = true;
-
+            this.updateItemButton.Click += new System.EventHandler(this.updateItemButton_Click);
+            // 
+            // removeItemButton
+            // 
             this.removeItemButton.Location = new System.Drawing.Point(20, 384);
             this.removeItemButton.Name = "removeItemButton";
             this.removeItemButton.Size = new System.Drawing.Size(220, 36);
             this.removeItemButton.TabIndex = 7;
             this.removeItemButton.Text = "Удалить";
             this.removeItemButton.UseVisualStyleBackColor = true;
-
-            // Главное окно
+            this.removeItemButton.Click += new System.EventHandler(this.removeItemButton_Click);
+            // 
+            // Form1
+            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 453);
             this.Controls.Add(this.nameLabel);
             this.Controls.Add(this.nameTextBox);
             this.Controls.Add(this.quantityLabel);
@@ -155,6 +190,7 @@
             this.Text = "Управление инвентарём";
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion

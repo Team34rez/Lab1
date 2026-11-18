@@ -13,6 +13,11 @@
             Quantity = quantity;
             Price = price;
             Category = category;
+
+        }
+        public override string ToString()
+        {
+            return $"{Name} — {Quantity} шт. — {Price:0.00} руб. — {Category}";
         }
     }
 }
