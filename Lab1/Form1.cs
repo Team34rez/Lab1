@@ -15,16 +15,32 @@ namespace Lab1
 {
     public partial class Form1 : Form
     {
-        private readonly string inventoryFile = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "Lab1",
-            "inventory.xml");
+        private readonly string inventoryFile;
+        private readonly Func<InventoryItem, bool> confirmRemoval;
+        private readonly Action<string, string> showNotice;
 
         private readonly XmlSerializer serializer =
             new XmlSerializer(typeof(List<InventoryItem>));
 
         public Form1()
+            : this(
+                Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "Lab1",
+                    "inventory.xml"),
+                ConfirmRemoval,
+                ShowNotice)
         {
+        }
+
+        public Form1(
+            string inventoryFile,
+            Func<InventoryItem, bool> confirmRemoval,
+            Action<string, string> showNotice)
+        {
+            this.inventoryFile = inventoryFile;
+            this.confirmRemoval = confirmRemoval;
+            this.showNotice = showNotice;
             InitializeComponent();
             LoadInventory();
         }
@@ -52,7 +68,7 @@ namespace Lab1
                 updateItemButton.Enabled = false;
                 removeItemButton.Enabled = false;
 
-                MessageBox.Show(
+                showNotice(
                     "Не удалось загрузить товары. Операции изменения отключены.\n\n" +
                     inventoryFile + "\n\n" + ex.Message,
                     "Ошибка загрузки");
@@ -84,7 +100,7 @@ namespace Lab1
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
+                showNotice(
                     "Изменения есть в окне программы, но сохранить их в файл не удалось.\n\n" +
                     ex.Message,
                     "Ошибка сохранения");
@@ -93,28 +109,14 @@ namespace Lab1
 
         private void addItemButton_Click(object sender, EventArgs e)
         {
-            string name = nameTextBox.Text.Trim();
-            string category = categoryTextBox.Text.Trim();
-
-            if (name.Length == 0 || category.Length == 0)
+            if (!InventoryItemInput.TryCreate(
+                nameTextBox.Text, quantityTextBox.Text, priceTextBox.Text, categoryTextBox.Text,
+                out InventoryItem item, out string error))
             {
-                MessageBox.Show("Введите название и категорию товара.");
+                showNotice(error, null);
                 return;
             }
 
-            if (!int.TryParse(quantityTextBox.Text, out int quantity) || quantity < 0)
-            {
-                MessageBox.Show("Количество должно быть целым числом от нуля.");
-                return;
-            }
-
-            if (!decimal.TryParse(priceTextBox.Text, out decimal price) || price < 0)
-            {
-                MessageBox.Show("Введите неотрицательную цену.");
-                return;
-            }
-
-            var item = new InventoryItem(name, quantity, price, category);
             itemsListBox.Items.Add(item);
             SaveInventory();
         }
@@ -139,32 +141,19 @@ namespace Lab1
 
             if (index < 0)
             {
-                MessageBox.Show("Выберите товар в списке.");
+                showNotice("Выберите товар в списке.", null);
                 return;
             }
 
-            string name = nameTextBox.Text.Trim();
-            string category = categoryTextBox.Text.Trim();
-
-            if (name.Length == 0 || category.Length == 0)
+            if (!InventoryItemInput.TryCreate(
+                nameTextBox.Text, quantityTextBox.Text, priceTextBox.Text, categoryTextBox.Text,
+                out InventoryItem item, out string error))
             {
-                MessageBox.Show("Введите название и категорию товара.");
+                showNotice(error, null);
                 return;
             }
 
-            if (!int.TryParse(quantityTextBox.Text, out int quantity) || quantity < 0)
-            {
-                MessageBox.Show("Количество должно быть целым числом от нуля.");
-                return;
-            }
-
-            if (!decimal.TryParse(priceTextBox.Text, out decimal price) || price < 0)
-            {
-                MessageBox.Show("Введите неотрицательную цену.");
-                return;
-            }
-
-            itemsListBox.Items[index] = new InventoryItem(name, quantity, price, category);
+            itemsListBox.Items[index] = item;
             SaveInventory();
         }
 
@@ -174,23 +163,38 @@ namespace Lab1
 
             if (index < 0)
             {
-                MessageBox.Show("Выберите товар для удаления.");
+                showNotice("Выберите товар для удаления.", null);
                 return;
             }
 
             var item = (InventoryItem)itemsListBox.Items[index];
 
-            var answer = MessageBox.Show(
+            if (confirmRemoval(item))
+            {
+                itemsListBox.Items.RemoveAt(index);
+                SaveInventory();
+            }
+        }
+
+        private static bool ConfirmRemoval(InventoryItem item)
+        {
+            return MessageBox.Show(
                 $"Удалить товар «{item.Name}»?",
                 "Удаление товара",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question,
-                MessageBoxDefaultButton.Button2);
+                MessageBoxDefaultButton.Button2) == DialogResult.Yes;
+        }
 
-            if (answer == DialogResult.Yes)
+        private static void ShowNotice(string message, string title)
+        {
+            if (title == null)
             {
-                itemsListBox.Items.RemoveAt(index);
-                SaveInventory();
+                MessageBox.Show(message);
+            }
+            else
+            {
+                MessageBox.Show(message, title);
             }
         }
     }
