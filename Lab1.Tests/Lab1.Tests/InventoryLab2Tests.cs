@@ -193,7 +193,39 @@ namespace Lab1.Tests
                 }
             });
         }
+        [TestMethod]
+        public void EditQuantity_PreservesOriginalPriceInXml()
+        {
+            WithTemporaryInventory(path =>
+            {
+                const decimal originalPrice = 125.567m;
 
+                using (var form = OpenForm(path, item => true))
+                {
+                    form.Show();
+                    FindControl<TextBox>(form, "nameTextBox").Text = "Проверка цены";
+                    FindControl<TextBox>(form, "quantityTextBox").Text = "5";
+                    FindControl<TextBox>(form, "priceTextBox").Text = originalPrice.ToString();
+                    FindControl<TextBox>(form, "categoryTextBox").Text = "Тест";
+                    FindControl<Button>(form, "addItemButton").PerformClick();
+
+                    var items = GetItems(form);
+                    Assert.AreEqual(1, items.Items.Count);
+                    Assert.AreEqual(originalPrice, ((InventoryItem)items.Items[0]).Price);
+
+                    items.SelectedIndex = 0;
+                    FindControl<TextBox>(form, "quantityTextBox").Text = "8";
+                    FindControl<Button>(form, "updateItemButton").PerformClick();
+                }
+
+                using (var reloaded = OpenForm(path, item => true))
+                {
+                    var item = (InventoryItem)GetItems(reloaded).Items[0];
+                    Assert.AreEqual(8, item.Quantity);
+                    Assert.AreEqual(originalPrice, item.Price);
+                }
+            });
+        }
         private static Form1 OpenForm(string path, Func<InventoryItem, bool> confirmRemoval)
         {
             return new Form1(path, confirmRemoval, (message, title) => Assert.Fail(message));

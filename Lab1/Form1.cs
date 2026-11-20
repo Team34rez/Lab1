@@ -131,7 +131,7 @@ namespace Lab1
 
             nameTextBox.Text = item.Name;
             quantityTextBox.Text = item.Quantity.ToString();
-            priceTextBox.Text = item.Price.ToString("0.00");
+            priceTextBox.Text = item.Price.ToString("0.00##########################");
             categoryTextBox.Text = item.Category;
         }
 
