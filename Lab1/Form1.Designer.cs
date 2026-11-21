@@ -47,6 +47,9 @@
             this.addItemButton = new System.Windows.Forms.Button();
             this.updateItemButton = new System.Windows.Forms.Button();
             this.removeItemButton = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.stockThresholdInput = new System.Windows.Forms.NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)(this.stockThresholdInput)).BeginInit();
             this.SuspendLayout();
             // 
             // nameLabel
@@ -166,11 +169,36 @@
             this.removeItemButton.UseVisualStyleBackColor = true;
             this.removeItemButton.Click += new System.EventHandler(this.removeItemButton_Click);
             // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(265, 427);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(165, 16);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Порог запаса (0 — выкл.)";
+            // 
+            // stockThresholdInput
+            // 
+            this.stockThresholdInput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.stockThresholdInput.Location = new System.Drawing.Point(520, 424);
+            this.stockThresholdInput.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.stockThresholdInput.Name = "stockThresholdInput";
+            this.stockThresholdInput.Size = new System.Drawing.Size(120, 22);
+            this.stockThresholdInput.TabIndex = 9;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 453);
+            this.Controls.Add(this.stockThresholdInput);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.nameLabel);
             this.Controls.Add(this.nameTextBox);
             this.Controls.Add(this.quantityLabel);
@@ -188,12 +216,16 @@
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Управление инвентарём";
+            ((System.ComponentModel.ISupportInitialize)(this.stockThresholdInput)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
+
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.NumericUpDown stockThresholdInput;
     }
 }
 

@@ -16,8 +16,10 @@
             Quantity = quantity;
             Price = price;
             Category = category;
-
+            
         }
+        public int StockThreshold { get; set; }
+        public bool StockAlertActive { get; set; }
         public override string ToString()
         {
             return $"{Name} — {Quantity} шт. — {Price:0.00} руб. — {Category}";

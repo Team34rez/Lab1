@@ -226,6 +226,45 @@ namespace Lab1.Tests
                 }
             });
         }
+        [TestMethod]
+        public void StockAlert_AtThresholdAfterRestock_ContinuesAfterRestart()
+        {
+            WithTemporaryInventory(path =>
+            {
+                string notice = null;
+                Action<string, string> captureNotice = (message, title) =>
+                {
+                    Assert.AreEqual("Низкий запас", title);
+                    notice = message;
+                };
+
+                using (var form = new Form1(path, item => true, captureNotice))
+                {
+                    form.Show();
+                    EnterItem(form, "Болты", 4, 10m, "Крепёж");
+                    FindControl<NumericUpDown>(form, "stockThresholdInput").Value = 5;
+                    FindControl<Button>(form, "addItemButton").PerformClick();
+                    Assert.AreEqual("Болты — осталось 4 шт.", notice);
+
+                    GetItems(form).SelectedIndex = 0;
+                    FindControl<TextBox>(form, "quantityTextBox").Text = "5";
+                    FindControl<Button>(form, "updateItemButton").PerformClick();
+                    Assert.AreEqual("Болты — осталось 5 шт.", notice);
+                }
+
+                notice = null;
+                using (var reloaded = new Form1(path, item => true, captureNotice))
+                {
+                    reloaded.Show();
+                    Application.DoEvents(); // Даём форме обработать событие Shown
+
+                    Assert.AreEqual("Болты — осталось 5 шт.", notice);
+                    GetItems(reloaded).SelectedIndex = 0;
+                    Assert.AreEqual(5m,
+                        FindControl<NumericUpDown>(reloaded, "stockThresholdInput").Value);
+                }
+            });
+        }
         private static Form1 OpenForm(string path, Func<InventoryItem, bool> confirmRemoval)
         {
             return new Form1(path, confirmRemoval, (message, title) => Assert.Fail(message));

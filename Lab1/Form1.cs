@@ -15,6 +15,7 @@ namespace Lab1
 {
     public partial class Form1 : Form
     {
+        private readonly System.Windows.Forms.Timer stockAlertTimer;
         private readonly string inventoryFile;
         private readonly Func<InventoryItem, bool> confirmRemoval;
         private readonly Action<string, string> showNotice;
@@ -43,6 +44,15 @@ namespace Lab1
             this.showNotice = showNotice;
             InitializeComponent();
             LoadInventory();
+            if (components == null)
+            {
+                components = new System.ComponentModel.Container();
+            }
+
+            stockAlertTimer = new System.Windows.Forms.Timer(components);
+            stockAlertTimer.Interval = 10000;
+            stockAlertTimer.Tick += (sender, e) => ShowStockAlerts();
+            Shown += (sender, e) => ShowStockAlerts();
         }
 
         private void LoadInventory()
@@ -74,7 +84,35 @@ namespace Lab1
                     "Ошибка загрузки");
             }
         }
+        private void ShowStockAlerts()
+        {
+            stockAlertTimer.Stop();
 
+            try
+            {
+                var alerts = new List<string>();
+
+                foreach (InventoryItem item in itemsListBox.Items)
+                {
+                    item.StockAlertActive = StockAlertRule.ShouldNotify(
+                        item.Quantity, item.StockThreshold, item.StockAlertActive);
+
+                    if (item.StockAlertActive)
+                    {
+                        alerts.Add($"{item.Name} — осталось {item.Quantity} шт.");
+                    }
+                }
+
+                if (alerts.Count > 0)
+                {
+                    showNotice(string.Join(Environment.NewLine, alerts), "Низкий запас");
+                }
+            }
+            finally
+            {
+                stockAlertTimer.Start();
+            }
+        }
         private void SaveInventory()
         {
             string tempFile = inventoryFile + ".tmp";
@@ -116,9 +154,15 @@ namespace Lab1
                 showNotice(error, null);
                 return;
             }
-
+            item.StockThreshold = (int)stockThresholdInput.Value;
+            item.StockAlertActive = StockAlertRule.ShouldNotify(
+            item.Quantity, item.StockThreshold, false);
             itemsListBox.Items.Add(item);
             SaveInventory();
+            if (item.StockAlertActive)
+            {
+                ShowStockAlerts();
+            }
         }
 
         private void itemsListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -133,6 +177,7 @@ namespace Lab1
             quantityTextBox.Text = item.Quantity.ToString();
             priceTextBox.Text = item.Price.ToString("0.00##########################");
             categoryTextBox.Text = item.Category;
+            stockThresholdInput.Value = item.StockThreshold;
         }
 
         private void updateItemButton_Click(object sender, EventArgs e)
@@ -152,9 +197,16 @@ namespace Lab1
                 showNotice(error, null);
                 return;
             }
-
+            item.StockThreshold = (int)stockThresholdInput.Value;
+            var previousItem = (InventoryItem)itemsListBox.Items[index];
+            item.StockAlertActive = StockAlertRule.ShouldNotify(
+                item.Quantity, item.StockThreshold, previousItem.StockAlertActive);
             itemsListBox.Items[index] = item;
             SaveInventory();
+            if (item.StockAlertActive)
+            {
+                ShowStockAlerts();
+            }
         }
 
         private void removeItemButton_Click(object sender, EventArgs e)
