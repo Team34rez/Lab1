@@ -25,6 +25,7 @@ namespace Lab1
 
         public Form1()
             : this(
+                Environment.GetEnvironmentVariable("LAB1_TEST_INVENTORY_FILE") ??
                 Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "Lab1",
